@@ -7,7 +7,11 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#"><span class="fa fa-rocket"></span> Rocket Fuel</a>
+      <?php if ($_SESSION['auth']=='true') : ?>
+		<a class="navbar-brand" href="/dashboard.php"><span class="fa fa-rocket"></span> Rocket Fuel</a>
+      <?php else: ?>
+		<a class="navbar-brand" href="/"><span class="fa fa-rocket"></span> Rocket Fuel</a>
+      <?php endif; ?>
     </div> 
     <div class="navbar-collapse collapse">
 	    <?php if ($_SESSION['auth']=='true') : ?>
