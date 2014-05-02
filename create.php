@@ -33,14 +33,6 @@ if ($_SESSION['auth'] != 'true') {
 
     <form class="form well" action="" method="POST">
       <h2>Project Details</h2>
-      <label for="email">Project Category:</label>
-      <select name="category" class="form-control">
-        <option>Option 1 - $12</option>
-        <option>Option 2 - $16</option>
-        <option>Option 3 - $18</option>
-        <option>Option 4 - $25</option>
-      </select>
-      <p class="help-block">Choose the category that best matches your project.</p>
       <label for="description">Project Description:</label>
       <textarea id="description" class="form-control" rows="6"></textarea>
       <br>
