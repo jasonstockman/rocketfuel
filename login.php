@@ -1,9 +1,9 @@
 <?php 
-include('inc/auth.php');
 if (isset($_POST['email'])&&isset($_POST['password'])) {
+  include('inc/auth.php');
   $_SESSION['auth'] = 'true';
   header('Location: /dashboard.php');
-}
+} 
 ?>
 <?php include('inc/header.php'); ?>
 </head>
@@ -26,6 +26,9 @@ if (isset($_POST['email'])&&isset($_POST['password'])) {
 <div class="row">
   <div class="col-md-4 col-md-offset-4">
     <form class="form well" action="" method="POST">
+      <?php if (isset($Error)) { ?>
+      <div class="alert alert-danger"><?php echo $Error; ?></div>
+      <?php } ?>
       <label for="email">Email:</label>
       <input id="email" type="email" name="email" class="form-control">
       <label for="password">Password:</label>

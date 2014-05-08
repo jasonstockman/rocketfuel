@@ -1,3 +1,32 @@
+<?php 
+include('inc/debug.php');
+if (isset($_POST['email'])&&isset($_POST['password'])&&isset($_POST['confirm_password'])) {
+  $error = '';
+  if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $error = 'Invalid email.';
+  }
+  if ($error!='') { 
+    include('inc/auth.php');
+    $hashed_password = password_hash("rasmuslerdorf", PASSWORD_DEFAULT);
+    if ($hashed_password===false) {
+      $error = 'Registration failed. Unable to hash password.';
+    }
+    $data = array(
+        'Email' => $_POST['email'],
+        'Hash' => $hashed_password,
+        'DisplayName' => 'Jason'
+    );
+    $id = $db->insert('Users', $data);
+    if($id&&$error=='') {
+      $_SESSION['auth'] = 'true';
+      header('Location: /dashboard.php');
+    }
+    else {
+      $error = 'Registration failed. Unable to save new user.';
+    }
+  }
+} 
+?>
 <?php include('inc/header.php'); ?>
 </head>
 <body>
@@ -18,7 +47,8 @@
 <!-- Example row of columns -->
 <div class="row">
   <div class="col-md-4 col-md-offset-4">
-    <form class="form well">
+    <form class="form well" action="" method="post">
+      <?php if (isset($error)&&$error!='') echo "<div class='alert alert-danger'>".$error."</div>"; ?>
       <label for="email">Email:</label>
       <input id="email" type="email" name="email" class="form-control">
       <label for="password">Password:</label>
