@@ -1,8 +1,22 @@
 <?php 
+// include('inc/debug.php');
 if (isset($_POST['email'])&&isset($_POST['password'])) {
-  include('inc/auth.php');
-  $_SESSION['auth'] = 'true';
-  header('Location: /dashboard.php');
+  $error = '';
+  if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $error = 'Invalid email.';
+  }
+  if ($error=='') { 
+    include('inc/auth.php');
+    $db->where ("email", $_POST['email']);
+    $user = $db->getOne ("Users");
+    if (password_verify($_POST['password'], $user['Hash'])) { // help
+      $_SESSION['auth'] = 'true';  
+      $_SESSION['UserID'] = $user['ID'];  
+      header('Location: /dashboard.php');
+    } else {
+        $error = 'Wrong username or password.';
+    }
+  }
 } 
 ?>
 <?php include('inc/header.php'); ?>
@@ -26,11 +40,9 @@ if (isset($_POST['email'])&&isset($_POST['password'])) {
 <div class="row">
   <div class="col-md-4 col-md-offset-4">
     <form class="form well" action="" method="POST">
-      <?php if (isset($Error)) { ?>
-      <div class="alert alert-danger"><?php echo $Error; ?></div>
-      <?php } ?>
+      <?php if (isset($error)&&$error!='') echo "<div class='alert alert-danger'>".$error."</div>"; ?>
       <label for="email">Email:</label>
-      <input id="email" type="email" name="email" class="form-control">
+      <input id="email" type="email" name="email" class="form-control"> 
       <label for="password">Password:</label>
       <input id="password" type="password" name="password" class="form-control">
       <br>

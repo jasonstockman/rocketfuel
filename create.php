@@ -3,6 +3,31 @@ include('inc/auth.php');
 if ($_SESSION['auth'] != 'true') {
   header('Location: /login.php');
 }
+// include('inc/debug.php');
+if (isset($_POST['name'])&&isset($_POST['description'])) {
+  $error = '';
+  if (strlen($_POST['name'])<1) {
+    $error = 'Choose project name.';
+  }
+  else if (strlen($_POST['description'])<1) {
+    $error = 'Project description required.';
+  }
+  if ($error=='') { 
+    include('inc/auth.php');
+    $data = array(
+        'UserID' => $_SESSION['UserID'],
+        'Title' => $_POST['name'],
+        'Description' => $_POST['description']
+    );
+    $id = $db->insert('Projects', $data);
+    if($id) {
+      header('Location: /dashboard.php');
+    }
+    else {
+      $error = 'Error. Unable to create new project.';
+    }
+  }
+} 
 ?>
 <?php include('inc/header.php'); ?>
 </head>
@@ -31,16 +56,19 @@ if ($_SESSION['auth'] != 'true') {
       <li>Review &amp; Finish</li>
     </ol>
 
+    <h2>Project Details</h2>
     <form class="form well" action="" method="POST">
-      <h2>Project Details</h2>
+      <?php if (isset($error)&&$error!='') echo "<div class='alert alert-danger'>".$error."</div>"; ?>    
+      <label for="name">Project Name:</label>
+      <input type="text" id="name" name="name" class="form-control">
       <label for="description">Project Description:</label>
-      <textarea id="description" class="form-control" rows="6"></textarea>
+      <textarea id="description" name="description" class="form-control" rows="6"></textarea>
       <br>
-      <div class="alert alert-info"><i class="fa fa-picture-o fa-2x"></i> File Upload goes here.</div>
+      <a href="#" id="fileUpload" class="alert alert-info"><i class="fa fa-picture-o fa-2x"></i> Upload Files.</a>
       <br>
       <p class="text-right">
         <span class="pull-left"><em>Pricing Info Updates Here</em></span>
-        <button type="submit" name="submit" class="btn btn-primary" onclick="alert('Thats all for now.');return false;">Save &amp; Continue</button>
+        <button type="submit" name="submit" class="btn btn-primary">Save &amp; Continue</button>
       </p>
     </form>
   </div>
@@ -50,6 +78,16 @@ if ($_SESSION['auth'] != 'true') {
 <hr>
 
 <?php include('inc/footer.php'); ?>
-
+<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+<script type="text/javascript">
+  filepicker.setKey('AijESHBiuRFq6lIomnKYrz');
+  $( function() {
+    $('#fileUpload').on('click', function() {
+      filepicker.pickAndStore({},{},function(InkBlobs){
+         console.log(JSON.stringify(InkBlobs));
+      });
+    });
+  });
+</script>
 </body>
 </html>

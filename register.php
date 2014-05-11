@@ -1,13 +1,13 @@
 <?php 
-include('inc/debug.php');
+// include('inc/debug.php');
 if (isset($_POST['email'])&&isset($_POST['password'])&&isset($_POST['confirm_password'])) {
   $error = '';
   if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     $error = 'Invalid email.';
   }
-  if ($error!='') { 
+  if ($error=='') { 
     include('inc/auth.php');
-    $hashed_password = password_hash("rasmuslerdorf", PASSWORD_DEFAULT);
+    $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     if ($hashed_password===false) {
       $error = 'Registration failed. Unable to hash password.';
     }
@@ -17,8 +17,9 @@ if (isset($_POST['email'])&&isset($_POST['password'])&&isset($_POST['confirm_pas
         'DisplayName' => 'Jason'
     );
     $id = $db->insert('Users', $data);
-    if($id&&$error=='') {
+    if($id) {
       $_SESSION['auth'] = 'true';
+      $_SESSION['new_account'] = 'true';
       header('Location: /dashboard.php');
     }
     else {

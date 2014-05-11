@@ -7,8 +7,7 @@
 .btn { outline: none !important;}
 .jumbotron { background: url('../img/xv.png') 0 0 repeat;}
 .jumbotron h1 { font-size: 5rem; }
-
-
+#fileUpload { color: #fff; text-decoration: none; width: 100%; float: left;}
 
 
 
